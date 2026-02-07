@@ -56,12 +56,12 @@ enterprise-devops-platform/
 └── README.md
 
 
-📌 Project Status
+## 📌 Project Status
 🚧 In Progress
 This project is being developed incrementally following a phase-by-phase DevOps approach, similar to real enterprise and freelance client engagements.
 
 
-🎯 Who This Project Is For
+## 🎯 Who This Project Is For
 
 DevOps Engineers preparing for interviews
 
@@ -71,7 +71,7 @@ Engineers learning end-to-end DevOps on AWS
 
 Anyone wanting real-world CI/CD & cloud automation experience
 
-📜 Disclaimer
+## 📜 Disclaimer
 
 This project is intended for learning, demonstration, and portfolio purposes, and follows industry best practices commonly used in production environments.
 
