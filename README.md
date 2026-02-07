@@ -55,3 +55,24 @@ enterprise-devops-platform/
 ├── docs/               # Architecture diagrams & documentation
 └── README.md
 
+
+📌 Project Status
+🚧 In Progress
+This project is being developed incrementally following a phase-by-phase DevOps approach, similar to real enterprise and freelance client engagements.
+
+
+🎯 Who This Project Is For
+
+DevOps Engineers preparing for interviews
+
+Freelancers building a strong Upwork/GitHub portfolio
+
+Engineers learning end-to-end DevOps on AWS
+
+Anyone wanting real-world CI/CD & cloud automation experience
+
+📜 Disclaimer
+
+This project is intended for learning, demonstration, and portfolio purposes, and follows industry best practices commonly used in production environments.
+
+
