@@ -37,33 +37,31 @@ jobs:
       # 4️⃣ Build Docker image (from app directory)
       - name: Build Docker image
         run: |
-          docker build \
-            -t enterprise-devops-app:${{ github.sha }} \
-            ./app
+          docker build \ -t enterprise-devops/enterprise-app:${{ github.sha }} \ ./app
 
       # 5️⃣ Tag image with commit SHA (immutable tag)
       - name: Tag image with commit SHA
         run: |
-          docker tag enterprise-devops-app:${{ github.sha }} \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
+          docker tag enterprise-devops/enterprise-app:${{ github.sha }} \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops/enterprise-app:${{ github.sha }}
 
       # 6️⃣ Push SHA-tagged image to ECR (main branch only)
       - name: Push image to ECR (commit SHA)
         if: github.ref == 'refs/heads/main'
         run: |
           docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops/enterprise-app:${{ github.sha }}
 
       # 7️⃣ Tag image as latest (main branch only)
       - name: Tag image as latest
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag enterprise-devops-app:${{ github.sha }} \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:latest
+          docker tag enterprise-devops/enterprise-app:${{ github.sha }} \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops/enterprise-app:latest
 
       # 8️⃣ Push latest tag to ECR (main branch only)
       - name: Push latest tag to ECR
         if: github.ref == 'refs/heads/main'
         run: |
           docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:latest
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops/enterprise-app:latest
