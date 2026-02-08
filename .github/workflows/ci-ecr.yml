@@ -1,3 +1,9 @@
+## This file perform the following action
+#       Git push → GitHub Actions
+#       → Docker build
+#       → AWS auth via IAM
+#       → Docker push to ECR
+
 name: CI - Build & Push to ECR
 
 on:
