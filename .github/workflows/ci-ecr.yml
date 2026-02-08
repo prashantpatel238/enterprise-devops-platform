@@ -1,0 +1,40 @@
+name: CI - Build & Push to ECR
+
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t enterprise-devops-app:${{ github.sha }} .
+
+      - name: Tag Docker image
+        run: |
+          docker tag enterprise-devops-app:${{ github.sha }} \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
+
+      - name: Push image to ECR (main branch only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
