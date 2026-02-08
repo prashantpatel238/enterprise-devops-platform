@@ -4,7 +4,7 @@
 #       → AWS auth via IAM
 #       → Docker push to ECR
 
-name: CI - Build & Push to ECR
+name: CI - Build & Push Docker Image to ECR
 
 on:
   push:
@@ -14,12 +14,15 @@ on:
 
 jobs:
   build-and-push:
+    name: Build Docker Image & Push to ECR
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout source code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -27,20 +30,40 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # 3️⃣ Login to Amazon ECR
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      # 4️⃣ Build Docker image (from app directory)
       - name: Build Docker image
         run: |
-          docker build -t enterprise-devops-app:${{ github.sha }} ./app
+          docker build \
+            -t enterprise-devops-app:${{ github.sha }} \
+            ./app
 
-      - name: Tag Docker image
+      # 5️⃣ Tag image with commit SHA (immutable tag)
+      - name: Tag image with commit SHA
         run: |
           docker tag enterprise-devops-app:${{ github.sha }} \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
 
-      - name: Push image to ECR (main branch only)
+      # 6️⃣ Push SHA-tagged image to ECR (main branch only)
+      - name: Push image to ECR (commit SHA)
         if: github.ref == 'refs/heads/main'
         run: |
           docker push \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:${{ github.sha }}
+
+      # 7️⃣ Tag image as latest (main branch only)
+      - name: Tag image as latest
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag enterprise-devops-app:${{ github.sha }} \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:latest
+
+      # 8️⃣ Push latest tag to ECR (main branch only)
+      - name: Push latest tag to ECR
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/enterprise-devops-app:latest
