@@ -37,7 +37,9 @@ jobs:
       # 4️⃣ Build Docker image (from app directory)
       - name: Build Docker image
         run: |
-          docker build \ -t enterprise-devops/enterprise-app:${{ github.sha }} \ ./app
+          docker build \
+            -t enterprise-devops/enterprise-app:${{ github.sha }} \
+            ./app
 
       # 5️⃣ Tag image with commit SHA (immutable tag)
       - name: Tag image with commit SHA
